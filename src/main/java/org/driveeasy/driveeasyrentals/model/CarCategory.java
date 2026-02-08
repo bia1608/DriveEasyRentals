@@ -1,4 +1,4 @@
-package com.driveeasy.model;
+package org.driveeasy.driveeasyrentals.model;
 
 public enum CarCategory {
     SUV,

@@ -1,4 +1,4 @@
-package com.driveeasy.exception;
+package org.driveeasy.driveeasyrentals.exception;
 
 public class BusinessException extends RuntimeException {
 

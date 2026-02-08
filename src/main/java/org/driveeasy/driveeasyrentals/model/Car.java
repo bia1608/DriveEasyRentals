@@ -1,45 +1,38 @@
-package com.driveeasy.model;
+package org.driveeasy.driveeasyrentals.model;
+
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@Entity
+@Table(name = "car")
 public class Car {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String brand;
     private String model;
+
+    @Enumerated(EnumType.STRING)
     private CarCategory category;
+
     private BigDecimal dailyRate;
+
     private boolean underMaintenance;
 
-    public Car() {
+    public boolean isUnderMaintenance() {
+        return underMaintenance;
     }
 
-    public Car(Long id,
-               String brand,
-               String model,
-               CarCategory category,
-               BigDecimal dailyRate,
-               boolean underMaintenance) {
+    public BigDecimal getDailyRate() {
+        return dailyRate;
+    }
+
+    public void setId(Long id) {
         this.id = id;
-        this.brand = brand;
-        this.model = model;
-        this.category = category;
-        this.dailyRate = dailyRate;
-        this.underMaintenance = underMaintenance;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Car setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getBrand() {
-        return brand;
     }
 
     public Car setBrand(String brand) {
@@ -47,17 +40,9 @@ public class Car {
         return this;
     }
 
-    public String getModel() {
-        return model;
-    }
-
     public Car setModel(String model) {
         this.model = model;
         return this;
-    }
-
-    public CarCategory getCategory() {
-        return category;
     }
 
     public Car setCategory(CarCategory category) {
@@ -65,34 +50,26 @@ public class Car {
         return this;
     }
 
-    public BigDecimal getDailyRate() {
-        return dailyRate;
+    public String getBrand() {
+        return brand;
     }
 
-    public Car setDailyRate(BigDecimal dailyRate) {
+    public String getModel() {
+        return model;
+    }
+
+    public Object getCategory() {
+        return category;
+    }
+
+    public Object setDailyRate(BigDecimal dailyRate) {
         this.dailyRate = dailyRate;
         return this;
-    }
-
-    public boolean isUnderMaintenance() {
-        return underMaintenance;
     }
 
     public Car setUnderMaintenance(boolean underMaintenance) {
         this.underMaintenance = underMaintenance;
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Car car)) return false;
-        return Objects.equals(id, car.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     @Override
@@ -106,4 +83,5 @@ public class Car {
                 ", underMaintenance=" + underMaintenance +
                 '}';
     }
+
 }
