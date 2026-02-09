@@ -1,5 +1,6 @@
 package org.driveeasy.driveeasyrentals.service;
 
+import org.driveeasy.driveeasyrentals.dto.ReservationResponseDto;
 import org.driveeasy.driveeasyrentals.exception.ConflictException;
 import org.driveeasy.driveeasyrentals.exception.InvalidDateException;
 import org.driveeasy.driveeasyrentals.exception.NotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -69,5 +71,41 @@ public class ReservationService {
         reservation.setStatus(ReservationStatus.ACTIVE);
 
         return reservationRepository.save(reservation);
+    }
+
+    public boolean isCarAvailable(Long carId, String startDate, String endDate) {
+        LocalDate start = DateUtils.parseDate(startDate);
+        LocalDate end = DateUtils.parseDate(endDate);
+
+        if (!start.isBefore(end)) {
+            throw new InvalidDateException("Invalid date range");
+        }
+
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new NotFoundException("Car not found"));
+
+        if (car.isUnderMaintenance()) {
+            return false;
+        }
+
+        return reservationRepository.findConflicts(carId, start, end).isEmpty();
+    }
+
+    public List<ReservationResponseDto> findActiveByCar(Long carId) {
+        // Query for active reservations overlapping a wide range; reuse repository query by scanning near future
+        List<Reservation> reservations = reservationRepository.findAll()
+                .stream()
+                .filter(r -> r.getCar() != null && carId.equals(r.getCar().getId()))
+                .collect(Collectors.toList());
+
+        return reservations.stream()
+                .map(r -> new ReservationResponseDto(
+                        r.getId(),
+                        r.getCar() != null ? r.getCar().getId() : null,
+                        r.getStartDate(),
+                        r.getEndDate(),
+                        r.getStatus()
+                ))
+                .collect(Collectors.toList());
     }
 }
