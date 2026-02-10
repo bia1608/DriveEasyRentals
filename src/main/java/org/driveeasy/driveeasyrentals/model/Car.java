@@ -84,7 +84,4 @@ public class Car {
                 '}';
     }
 
-    public Long getId() {
-        return this.id;
-    }
 }

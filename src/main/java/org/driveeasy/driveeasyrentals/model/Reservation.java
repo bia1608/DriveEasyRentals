@@ -1,7 +1,6 @@
 package org.driveeasy.driveeasyrentals.model;
 
 import jakarta.persistence.*;
-import org.driveeasy.driveeasyrentals.dto.ReservationResponseDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -51,25 +50,5 @@ public class Reservation {
 
     public void setStatus(ReservationStatus status) {
         this.status = status;
-    }
-
-    public Car getCar() {
-        return this.car;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public LocalDate getStartDate() {
-        return this.startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return this.endDate;
-    }
-
-    public ReservationStatus getStatus() {
-        return this.status;
     }
 }

@@ -16,12 +16,4 @@ public final class DateUtils {
         // ranges [start1, end1) and [start2, end2) overlap if start1 < end2 && start2 < end1
         return start1.isBefore(end2) && start2.isBefore(end1);
     }
-
-    public static LocalDate parseDate(String startDate) {
-        try {
-            return LocalDate.parse(startDate);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid date format: " + startDate);
-        }
-    }
 }
