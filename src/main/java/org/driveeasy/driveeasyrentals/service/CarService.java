@@ -36,6 +36,18 @@ public class CarService {
         return carRepository.save(existing);
     }
 
+    public Car setMaintenance(Long id, boolean underMaintenance) {
+        Car car = carRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Car not found with id " + id));
+        car.setUnderMaintenance(underMaintenance);
+        return carRepository.save(car);
+    }
+
+    public Car findById(Long id) {
+        return carRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Car not found with id " + id));
+    }
+
     public List<Car> searchAvailable(CarCategory category,
                                      BigDecimal minRate,
                                      BigDecimal maxRate,

@@ -58,11 +58,11 @@ public class Car {
         return model;
     }
 
-    public Object getCategory() {
+    public CarCategory getCategory() {
         return category;
     }
 
-    public Object setDailyRate(BigDecimal dailyRate) {
+    public Car setDailyRate(BigDecimal dailyRate) {
         this.dailyRate = dailyRate;
         return this;
     }

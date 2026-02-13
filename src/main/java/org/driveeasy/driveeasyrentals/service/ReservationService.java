@@ -70,4 +70,47 @@ public class ReservationService {
 
         return reservationRepository.save(reservation);
     }
+
+    public Reservation cancel(Long reservationId, Long customerId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NotFoundException("Reservation not found with id: " + reservationId));
+
+        // Verifica ca rezervarea apartine clientului (securitate)
+        if (!reservation.getCustomer().getId().equals(customerId)) {
+            throw new ConflictException("Reservation does not belong to this customer");
+        }
+
+        if (reservation.getStatus() != ReservationStatus.ACTIVE) {
+            throw new ConflictException("Only ACTIVE reservations can be cancelled");
+        }
+
+        // Regula: anularea e permisa doar daca nu a inceput inca
+        if (!LocalDate.now().isBefore(reservation.getStartDate())) {
+            throw new ConflictException("Cannot cancel a reservation that has already started");
+        }
+
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        return reservationRepository.save(reservation);
+    }
+
+    /**
+     * Returneaza toate rezervarile unui client (istoric personal).
+     * Foloseste Stream pentru a sorta dupa data de start descrescator.
+     */
+    public List<Reservation> findByCustomer(Long customerId) {
+        customerRepository.findById(customerId)
+                .orElseThrow(() -> new NotFoundException("Customer not found with id: " + customerId));
+
+        return reservationRepository.findByCustomerId(customerId)
+                .stream()
+                .sorted((r1, r2) -> r2.getStartDate().compareTo(r1.getStartDate()))
+                .toList();
+    }
+
+    /**
+     * Returneaza toate rezervarile (pentru admin).
+     */
+    public List<Reservation> findAll() {
+        return reservationRepository.findAll();
+    }
 }

@@ -31,11 +31,19 @@ public interface CarRepository extends JpaRepository<Car, Long> {
           AND (:minRate IS NULL OR c.dailyRate >= :minRate)
           AND (:maxRate IS NULL OR c.dailyRate <= :maxRate)
           AND c.underMaintenance = false
+          AND NOT EXISTS (
+                        SELECT r FROM Reservation r
+                        WHERE r.car = c
+                          AND r.status = 'ACTIVE'
+                          AND r.startDate < :endDate
+                          AND :startDate < r.endDate
+                    )
     """)
         List<Car> searchAvailable(
                 @Param("category") CarCategory category,
                 @Param("minRate") BigDecimal minRate,
                 @Param("maxRate") BigDecimal maxRate,
-                LocalDate startDate, LocalDate endDate);
+                @Param("startDate") LocalDate startDate,
+                @Param("endDate") LocalDate endDate);
     }
 
